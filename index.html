@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Portfolio</title>
+    <!-- Google Font: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons (still included, though not used by top nav) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* General Body Styling */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #ffffff; /* White background */
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column; /* Stack elements vertically */
+            justify-content: flex-start; /* Align to top */
+            align-items: center; /* Center content horizontally */
+            box-sizing: border-box;
+        }
+
+        /* Top Navigation Bar (Always visible and sticky) */
+        .top-bar {
+            background-color: #A0D07E;
+            height: 3rem; /* h-12 */
+            width: 100%; /* Full viewport width */
+            flex-shrink: 0; /* Prevent shrinking */
+            display: flex; /* Use flexbox for internal alignment */
+            justify-content: center; /* Center content horizontally */
+            align-items: center; /* Center content vertically */
+            padding: 0 1.5rem; /* Add horizontal padding */
+            box-sizing: border-box; /* Include padding in width */
+            position: sticky; /* Make the element sticky */
+            top: 0; /* Stick to the top of the viewport */
+            z-index: 1000; /* Ensure it stays on top of other content */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Optional: Add a subtle shadow for better visibility when sticky */
+            transition: background-color 0.3s ease, opacity 0.3s ease; /* Smooth transition for transparency */
+        }
+
+        /* Class for when the top bar is scrolled */
+        .top-bar.scrolled {
+            opacity: 0.9; /* Slightly transparent */
+            background-color: rgba(160, 208, 126, 0.9); /* Maintain green color with transparency */
+        }
+
+        /* Navigation Bar Styling for Top Nav */
+        .main-nav ul {
+            list-style: none; /* Remove bullet points */
+            margin: 0;
+            padding: 0;
+            display: flex; /* Arrange list items horizontally */
+            gap: 2rem; /* Space between navigation items */
+        }
+
+        .main-nav a {
+            color: #ffffff; /* White text color for links */
+            text-decoration: none; /* Remove underline */
+            font-weight: 600; /* Semi-bold font */
+            font-size: 1rem; /* Standard font size */
+            transition: color 0.3s ease; /* Smooth transition for hover effect */
+        }
+
+        .main-nav a:hover {
+            color: #808285; /* Change color on hover */
+        }
+
+        /* Left Sidebar Navigation (REMOVED - now display: none) */
+        .left-sidebar-nav {
+            display: none; /* Always hidden now */
+        }
+
+        /* Main Portfolio Container */
+        .portfolio-container {
+            background-color: #ffffff;
+            width: 100%; /* Now takes full width */
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for definition */
+            flex-grow: 1; /* Allows container to grow and take available space */
+            display: flex; /* Use flexbox for internal layout */
+            flex-direction: column; /* Stack internal sections vertically */
+        }
+
+        /* Responsive Adjustments for Large Screens (REVERTED) */
+        @media (min-width: 1024px) { /* Desktop breakpoint */
+            .top-bar {
+                display: flex; /* Ensure top bar is visible on desktop too */
+            }
+
+            .left-sidebar-nav {
+                display: none; /* Ensure left sidebar is hidden */
+            }
+
+            body {
+                flex-direction: column; /* Body remains column for all sizes */
+                justify-content: flex-start;
+                align-items: center;
+            }
+
+            .portfolio-container {
+                margin-left: 0; /* Remove left margin */
+                width: 100%; /* Full width */
+            }
+        }
+
+
+        /* Content Area Padding and Max-Width */
+        .content-area {
+            padding: 1.5rem; /* p-6 */
+            max-width: 600px; /* Constrain content width */
+            margin: 0 auto; /* Center the content */
+            width: 100%; /* Ensure it respects padding and max-width */
+            box-sizing: border-box; /* Include padding in width calculation */
+        }
+
+        /* Section Styling */
+        .section {
+            padding: 2rem 0; /* Reverted vertical padding for sections */
+            text-align: center;
+        }
+
+        .section h2 {
+            font-size: 2.5rem;
+            color: #A0D07E;
+            margin-bottom: 1.5rem;
+        }
+
+        .section p {
+            color: #808285;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            text-align: justify; /* Justify the text */
+        }
+
+        /* Welcome Section (Existing) */
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-top: 0; /* Remove top padding as section handles it */
+        }
+
+        .welcome-text-container {
+            background-color: #A0D07E;
+            border-radius: 9999px; /* rounded-full */
+            padding: 0.75rem 2rem; /* py-3 px-8 */
+            display: inline-block; /* To make padding and border-radius apply correctly */
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-title {
+            color: #ffffff; /* Changed to white */
+            font-size: 1.875rem; /* text-3xl */
+            font-weight: 600; /* font-semibold */
+        }
+
+        .welcome-subtitle {
+            color: #808285;
+            font-size: 0.875rem; /* text-sm */
+        }
+
+        /* Middle Section: Three Squares (used for Creations images) */
+        .middle-section {
+            border: 2px solid #A0D07E;
+            border-radius: 0.5rem; /* rounded-lg */
+            padding: 0.75rem; /* p-3 */
+            max-width: 600px; /* Constrain content width */
+            margin: 0 auto 2rem auto; /* Center and add bottom margin */
+            width: 100%; /* Ensure it respects padding and max-width */
+            display: flex;
+            justify-content: space-around;
+            gap: 1rem; /* space-x-4 */
+            box-sizing: border-box; /* Include padding in width calculation */
+            flex-wrap: wrap; /* Allow items to wrap to the next line */
+        }
+
+        .square-item {
+            background-color: #808285; /* Fallback background */
+            width: 30%; /* Approximate width for three items */
+            padding-bottom: 30%; /* Creates a square aspect ratio */
+            border-radius: 0.375rem; /* rounded-md */
+            overflow: hidden; /* Hide overflowing parts of the image */
+            position: relative; /* Needed for absolute positioning of image if desired, or for overflow */
+            cursor: pointer; /* Indicate it's interactive */
+        }
+
+        .square-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Cover the area without distorting aspect ratio */
+            display: block; /* Remove extra space below image */
+            transition: transform 0.3s ease; /* Smooth transition for magnification */
+            position: absolute; /* Position image within the square-item */
+            top: 0;
+            left: 0;
+        }
+
+        .square-item:hover img {
+            transform: scale(1.1); /* Magnify by 10% on hover */
+        }
+
+        /* Bottom Section: Large White Square and Rectangles */
+        .bottom-section {
+            border: 2px solid #A0D07E;
+            border-radius: 0.5rem; /* rounded-lg */
+            padding: 0.75rem; /* p-3 */
+            display: flex;
+            align-items: center;
+            gap: 1rem; /* space-x-4 */
+            margin-bottom: 2rem; /* Added margin-bottom for consistency */
+        }
+
+        .large-white-square {
+            background-color: #ffffff;
+            border: 1px solid #808285;
+            width: 6rem; /* w-24 */
+            height: 6rem; /* h-24 */
+            border-radius: 0.375rem; /* rounded-md */
+        }
+
+        .rectangles-container {
+            flex: 1; /* flex-1 */
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem; /* space-y-2 */
+        }
+
+        .rectangle-item {
+            background-color: #808285;
+            height: 2rem; /* h-8 */
+            border-radius: 0.375rem; /* rounded-md */
+        }
+
+        /* Bottom Green Bar - Now full width and includes footer text */
+        .bottom-bar {
+            background-color: #A0D07E;
+            height: 2rem; /* h-8 */
+            width: 100%; /* Full viewport width */
+            flex-shrink: 0; /* Prevent shrinking */
+            display: flex; /* Enable flexbox for centering content */
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+            color: white; /* Text color for the footer */
+            font-size: 0.875rem; /* text-sm */
+            font-weight: 400; /* Normal font weight */
+        }
+
+        /* Fullscreen Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent black background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000; /* Higher z-index to be on top of everything */
+            opacity: 0; /* Start hidden with opacity 0 */
+            visibility: hidden; /* Hide from screen readers and interaction */
+            transition: opacity 0.3s ease, visibility 0.3s ease; /* Smooth transition */
+        }
+
+        .modal-overlay.active {
+            opacity: 1; /* Fade in */
+            visibility: visible; /* Make visible */
+        }
+
+        .modal-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain; /* Ensure the entire image fits within the modal */
+            display: block; /* Remove extra space below image */
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+            z-index: 2001; /* Ensure close button is above the image */
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(0,0,0,0.5); /* Add a subtle shadow for visibility */
+            transition: color 0.2s ease;
+        }
+
+        .close-button:hover {
+            color: #A0D07E; /* Change color on hover */
+        }
+
+        /* Download Resume Button Styling */
+        .download-button {
+            display: inline-block;
+            background-color: #A0D07E; /* Green background */
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 1.5rem; /* Space above the button */
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            border: none; /* Remove default button border */
+            cursor: pointer; /* Indicate it's clickable */
+            font-size: 1rem;
+        }
+
+        .download-button:hover {
+            background-color: #808285; /* Darker green on hover */
+            transform: translateY(-2px); /* Slight lift effect */
+        }
+
+        /* Styling for the portrait image in Home section */
+        .portrait-image {
+            max-width: 100%; /* Ensure it's responsive */
+            height: auto; /* Maintain aspect ratio */
+            border-radius: 8px; /* Slightly rounded corners */
+            margin-top: 2rem; /* Space below the welcome text */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Subtle shadow */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation Bar (Always visible and sticky) -->
+    <div class="top-bar" id="mainTopBar">
+        <nav class="main-nav">
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#creations">Creations</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Main Portfolio Content -->
+    <div class="portfolio-container">
+        <!-- Home Section -->
+        <section id="home" class="section">
+            <div class="content-area">
+                <div class="welcome-section">
+                    <div class="welcome-text-container">
+                        <span class="welcome-title">Welcome</span>
+                    </div>
+                </div>
+                <!-- Replaced text with a placeholder portrait image -->
+                <img src="C:\Users\Ezra\Documents\Coding\Halaman porto\assets\tttyt.JPG" alt="Your Portrait" class="portrait-image">
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="section">
+            <div class="content-area">
+                <h2>About Me</h2>
+                <p>I am a passionate individual with a keen eye for design and a drive to create engaging design based on what my client need.</p>
+                <p>My journey in design began with a curiosity for how things work and a desire to bring ideas to life wheter on screen or real life. I believe that good design is not just about aesthetics, but also about functionality and accessibility. I am constantly learning new technologies and refining my skills to stay at the forefront of design or tech trends.</p>
+                <p>I am learning HTML, CSS, 3D design application such as Blender, Rhinoceros, Sketch Up, and 2D design application such as Adobe Illustrator, Adobe Photoshop, and Corel Draw.</p>
+                <p>In my free time, I enjoy exploring new design tools, experimenting with code, reading, or drawing. I'm always looking for learning something new.</p>
+
+                <!-- Download Resume Button -->
+                <a href="https://drive.google.com/file/d/1MfU0f71upd9gUg21gyI07VXXBho-qGmq/view?usp=drive_link" id="downloadResumeButton" class="download-button" download="Your_Resume.pdf">Download Resume</a>
+            </div>
+        </section>
+
+        <!-- Creations Section -->
+        <section id="creations" class="section">
+            <div class="content-area">
+                <h2>My Creations</h2>
+                <p>Here you can find a selection of my recent projects and works. Each project reflects my dedication to detail and my commitment to delivering high-quality results. I enjoy tackling diverse challenges and bringing unique visions to life.</p>
+                <p>From simple 3D images to 2D designs, I strive to create designs that are not only visually appealing but also highly functional and intuitive. My goal is to craft experiences that leave a lasting positive impression on users.</p>
+                <p>Feel free to explore the examples below to get a better understanding of my capabilities and design approach. If you have a project in mind, I'd love to hear about it!</p>
+                <!-- Image placeholders for creation items -->
+                <div class="middle-section" style="margin-bottom: 1rem;">
+                    <div class="square-item">
+                        <img src="C:\Users\Ezra\Documents\Coding\Halaman porto\assets\1.jpg" alt="Abstract Art">
+                    </div>
+                    <div class="square-item">
+                        <img src="C:\Users\Ezra\Documents\Coding\Halaman porto\assets\3.jpg" alt="Cityscape">
+                    </div>
+                    <div class="square-item">
+                        <img src="C:\Users\Ezra\Documents\Coding\Halaman porto\assets\6.jpg" alt="Nature Scene">
+                    </div>
+                </div>
+                <div class="middle-section">
+                    <div class="square-item">
+                        <img src="C:\Users\Ezra\Documents\Coding\Halaman porto\assets\7.jpg" alt="Workspace">
+                    </div>
+                    <div class="square-item">
+                        <img src="C:\Users\Ezra\Documents\Coding\Halaman porto\assets\8.jpg" alt="Technology">
+                    </div>
+                    <div class="square-item">
+                        <img src="C:\Users\Ezra\Documents\Coding\Halaman porto\assets\9.jpg" alt="Coding">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="section">
+            <div class="content-area">
+                <h2>Get in Touch</h2>
+                <p>I'm always open to new opportunities, collaborations, and interesting conversations. If you have a project in mind, a question, or just want to say hello, feel free to reach out!</p>
+                <p>You can connect with me through the following:</p>
+                <p>Email: <a href="mailto:your.email@example.com" style="color: #A0D07E; text-decoration: underline;">ezraeka43@gmail.com</a></p>
+                <p>LinkedIn: <a href="#" style="color: #A0D07E; text-decoration: underline;">linkedin.com/in/ezra-eka</a></p>
+                <p>GitHub: <a href="#" style="color: #A0D07E; text-decoration: underline;">github.com/RedRaze0</a></p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Bottom Green Bar -->
+    <div class="bottom-bar">
+        <span>&copy; EZR-2025</span>
+    </div>
+
+    <!-- Fullscreen Modal HTML -->
+    <div id="fullscreenModal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <img id="modalImage" src="" alt="Full Screen Image">
+        </div>
+    </div>
+
+    <script>
+        // Get navigation bar element for sticky effect
+        const topBar = document.getElementById('mainTopBar');
+
+        // Get modal elements
+        const fullscreenModal = document.getElementById('fullscreenModal');
+        const modalImage = document.getElementById('modalImage');
+        const closeButton = document.querySelector('.close-button');
+
+        // Get all creation images
+        const creationImages = document.querySelectorAll('.square-item img');
+
+        // Get Download Resume button
+        const downloadResumeButton = document.getElementById('downloadResumeButton');
+
+
+        // Function to handle scroll event for sticky nav transparency (applies to top bar only)
+        function handleScroll() {
+            // This now applies to the single top bar regardless of screen size
+            if (window.scrollY > 50) {
+                topBar.classList.add('scrolled');
+            } else {
+                topBar.classList.remove('scrolled');
+            }
+        }
+
+        // Event listener for the Download Resume button (no CAPTCHA)
+        downloadResumeButton.addEventListener('click', (event) => {
+            // In a real scenario, you'd trigger the actual file download here.
+            // For now, it will just log to console and simulate download.
+            console.log("Initiating download...");
+            // Programmatically click the link to trigger download
+            const link = document.createElement('a');
+            link.href = downloadResumeButton.href;
+            link.download = downloadResumeButton.download;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+
+
+        // Add click event listeners to creation images
+        creationImages.forEach(image => {
+            image.addEventListener('click', () => {
+                modalImage.src = image.src; // Set the source of the modal image
+                fullscreenModal.classList.add('active'); // Show the modal
+            });
+        });
+
+        // Add click event listener to the close button
+        closeButton.addEventListener('click', () => {
+            fullscreenModal.classList.remove('active'); // Hide the modal
+            modalImage.src = ''; // Clear the image source
+        });
+
+        // Add click event listener to the modal overlay itself to close when clicking outside the image
+        fullscreenModal.addEventListener('click', (event) => {
+            if (event.target === fullscreenModal) { // Check if the click was directly on the overlay
+                fullscreenModal.classList.remove('active'); // Hide the modal
+                modalImage.src = ''; // Clear the image source
+            }
+        });
+
+        // Add scroll event listener to the window
+        window.addEventListener('scroll', handleScroll);
+
+        // Call functions on load
+        window.onload = function() {
+            handleScroll(); // Check initial scroll position
+        };
+    </script>
+
+</body>
+</html>
